@@ -1,0 +1,5 @@
+D:\SD\Projects\SPEAKII\exported\Website\bin\SCExtensions.dll
+D:\SD\Projects\SPEAKII\exported\Website\bin\SCExtensions.pdb
+D:\SD\Projects\SPEAKII\exported\Website\Components\SCExtensions\obj\Debug\SCExtensions.csprojResolveAssemblyReference.cache
+D:\SD\Projects\SPEAKII\exported\Website\Components\SCExtensions\obj\Debug\SCExtensions.dll
+D:\SD\Projects\SPEAKII\exported\Website\Components\SCExtensions\obj\Debug\SCExtensions.pdb

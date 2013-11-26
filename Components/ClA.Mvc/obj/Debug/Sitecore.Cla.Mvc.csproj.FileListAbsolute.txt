@@ -1,0 +1,5 @@
+D:\SD\Projects\SPEAKII\exported\Website\Components\ClA.Mvc\obj\Debug\Sitecore.Cla.Mvc.csprojResolveAssemblyReference.cache
+D:\SD\Projects\SPEAKII\exported\Website\bin\Sitecore.Cla.Mvc.dll
+D:\SD\Projects\SPEAKII\exported\Website\bin\Sitecore.Cla.Mvc.pdb
+D:\SD\Projects\SPEAKII\exported\Website\Components\ClA.Mvc\obj\Debug\Sitecore.Cla.Mvc.dll
+D:\SD\Projects\SPEAKII\exported\Website\Components\ClA.Mvc\obj\Debug\Sitecore.Cla.Mvc.pdb

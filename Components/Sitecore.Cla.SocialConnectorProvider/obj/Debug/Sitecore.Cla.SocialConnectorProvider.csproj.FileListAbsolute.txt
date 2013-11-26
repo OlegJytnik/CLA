@@ -1,0 +1,5 @@
+D:\SD\Projects\SPEAKII\exported\Website\Components\Sitecore.Cla.SocialConnectorProvider\obj\Debug\Sitecore.Cla.SocialConnectorProvider.csprojResolveAssemblyReference.cache
+D:\SD\Projects\SPEAKII\exported\Website\bin\Sitecore.Cla.SocialConnectorProvider.dll
+D:\SD\Projects\SPEAKII\exported\Website\bin\Sitecore.Cla.SocialConnectorProvider.pdb
+D:\SD\Projects\SPEAKII\exported\Website\Components\Sitecore.Cla.SocialConnectorProvider\obj\Debug\Sitecore.Cla.SocialConnectorProvider.dll
+D:\SD\Projects\SPEAKII\exported\Website\Components\Sitecore.Cla.SocialConnectorProvider\obj\Debug\Sitecore.Cla.SocialConnectorProvider.pdb
