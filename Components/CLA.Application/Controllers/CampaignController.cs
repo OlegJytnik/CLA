@@ -17,6 +17,7 @@ namespace Sitecore.Cla.Application.Controllers
   using System.Net;
   using System.Text;
   using System.Web.Mvc;
+  using System.Xml.Linq;
 
   using Sitecore.Analytics.Data.Items;
   using Sitecore.Cla.Application.Interfaces;
@@ -1171,6 +1172,77 @@ namespace Sitecore.Cla.Application.Controllers
       }
 
       return this.Json(new { accounts = accounts, selectedaccounts = selected }, JsonRequestBehavior.AllowGet);
+    }
+
+    [HttpGet]
+    public ActionResult GetAssignedGoals(string itemid)
+    {
+      var masterdb = Sitecore.Configuration.Factory.GetDatabase("master");
+      var item = masterdb.GetItem(itemid);
+      var list = new List<dynamic>();
+      if (item != null)
+      {
+
+        var tracking =
+          new Sitecore.Analytics.Data.TrackingField(item.Fields[Sitecore.Analytics.AnalyticsIds.TrackingField]);
+
+        var assignedgoals = tracking.Events.Where(x => x.DefinitionItem.IsGoal);
+        foreach (var goal in Sitecore.Analytics.Tracker.DefinitionItems.Goals)
+        {
+          var selected = assignedgoals.Any(x => x.DefinitionItem.ID.ToString().Equals(goal.ID.ToString()));
+          list.Add(new {goalname = goal.Name, goalid = goal.ID.ToString(), isselected = selected}); 
+        }
+      }
+
+      return this.Json(list, JsonRequestBehavior.AllowGet);
+    }
+
+    [HttpPost]
+    public ActionResult AssignGoals(string itemid, string selected)
+    {
+      var masterdb = Sitecore.Configuration.Factory.GetDatabase("master");
+      var item = masterdb.GetItem(itemid);
+      var splitselected = selected.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+      if (item != null)
+      {
+        var list = new List<XElement>();
+        var tracking = new Sitecore.Analytics.Data.TrackingField(item.Fields[Sitecore.Analytics.AnalyticsIds.TrackingField]);
+        var xdoc = XDocument.Parse(tracking.GetFieldValue());
+        var selectedevents = xdoc.Root.Elements().Where(x => x.Name.LocalName.Equals("event"));
+        var goals = Sitecore.Analytics.Tracker.DefinitionItems.Goals;
+        foreach (var goal in goals)
+        {
+          var sevent = selectedevents.Where(x => x.Attribute("id").Value.Equals(goal.ID.ToString())).FirstOrDefault();
+          if (splitselected.Contains(goal.ID.ToString()))
+          {
+            if (sevent == null)
+            {
+              var element = new XElement("event");
+              element.SetAttributeValue("id", goal.ID.ToString());
+              element.SetAttributeValue("name", goal.Name);
+              list.Add(element);
+            }
+          }
+          else
+          {
+            if (sevent!= null)
+            {
+              sevent.Remove();
+            }
+          }
+        }
+
+        foreach (var xElement in list)
+        {
+          xdoc.Root.Add(xElement);
+        }
+
+        item.Editing.BeginEdit();
+        item[Sitecore.Analytics.AnalyticsIds.TrackingField] = xdoc.ToString();
+        item.Editing.EndEdit();
+
+      }
+      return new HttpStatusCodeResult(200);
     }
 
     private struct Email

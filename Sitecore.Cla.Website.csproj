@@ -89,6 +89,7 @@
     <Content Include="sitecore\shell\client\sitecore\Applications\CLA\Components\CampaignDataSource.js" />
     <Content Include="sitecore\shell\client\sitecore\Applications\CLA\Components\CampaignDevicesChart.js" />
     <Content Include="sitecore\shell\client\sitecore\Applications\CLA\Components\CampaignAttachDialog.js" />
+    <Content Include="sitecore\shell\client\sitecore\Applications\CLA\Components\AssignGoalDialog.js" />
     <Content Include="sitecore\shell\client\sitecore\Applications\CLA\Components\CreateEmailDialog.js" />
     <Content Include="sitecore\shell\client\sitecore\Applications\CLA\Components\EngagementPlanAttachDialog.js" />
     <Content Include="sitecore\shell\client\sitecore\Applications\CLA\EditCampaign\Emails.js" />

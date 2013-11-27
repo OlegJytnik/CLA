@@ -142,6 +142,13 @@ define(["sitecore"], function (_sc) {
                 var createEmailDialog = app["createEmailDialog"] = subApp;
                 subApp.set("camp", self.campaign);
             });
+            
+            this.insertRendering("{01B5394E-1F2B-4BBA-A23D-268B62DBEF6D}", { $el: $("body") }, function (subApp) {
+                var assignGoalsDialog = app["assignGoalsDialog"] = subApp;
+                subApp.set("camp", self.campaign);
+            });
+            
+            
 
             database.getItem(id, function (data) {
                 self.item = data.toModel();
@@ -153,64 +160,64 @@ define(["sitecore"], function (_sc) {
         },
 
         updateCampaignInfo: function () {
-          var self = this;
-          this.campaign.fetch({
-            data: { id: this.campaign.get("itemId") }, success: function (model, response, options) {
-              var data = response;
-              self.campaign.set("StartDate", data.StartDate);
-              self.campaign.set("EndDate", data.EndDate);
-              self.DatePicker.set("date", data.StartDate);
-              self.EndDatePicker.set("date", data.EndDate);
-              self.StartDateTValue.set("text", data.StartDate);
-              self.EndDateTValue.set("text", data.EndDate);
-              self.TotalValue.set("text", data.TotalValue);
-              self.ValuePerDay.set("text", data.AvgValue);
-              self.StateValue.set("text", data.State);
-              self.campaign.set("Cost", data.Cost);
-              self.CostInfoTextBox.set("text", data.Cost);
-              self.CostOverallValue.set("text", data.Cost);
+            var self = this;
+            this.campaign.fetch({
+                data: { id: this.campaign.get("itemId") }, success: function (model, response, options) {
+                    var data = response;
+                    self.campaign.set("StartDate", data.StartDate);
+                    self.campaign.set("EndDate", data.EndDate);
+                    self.DatePicker.set("date", data.StartDate);
+                    self.EndDatePicker.set("date", data.EndDate);
+                    self.StartDateTValue.set("text", data.StartDate);
+                    self.EndDateTValue.set("text", data.EndDate);
+                    self.TotalValue.set("text", data.TotalValue);
+                    self.ValuePerDay.set("text", data.AvgValue);
+                    self.StateValue.set("text", data.State);
+                    self.campaign.set("Cost", data.Cost);
+                    self.CostInfoTextBox.set("text", data.Cost);
+                    self.CostOverallValue.set("text", data.Cost);
               
-              // Cost, Cost per Day
-              if (data.Cost > 0) {
-                self.CostOverallTitle.viewModel.$el.show();
-                self.CostOverallValue.viewModel.$el.show();
+                    // Cost, Cost per Day
+                    if (data.Cost > 0) {
+                        self.CostOverallTitle.viewModel.$el.show();
+                        self.CostOverallValue.viewModel.$el.show();
                 
-                // if there is even over version published then calculate value of "Cost per Day"
-                var isPublished = self.isCampaignPublishVersion();
-                if (isPublished) {
-                  try {
-                    var today = new Date();
-                    var startDate = new Date(data.StartDate);
+                        // if there is even over version published then calculate value of "Cost per Day"
+                        var isPublished = self.isCampaignPublishVersion();
+                        if (isPublished) {
+                            try {
+                                var today = new Date();
+                                var startDate = new Date(data.StartDate);
 
-                    var day = 1000 * 60 * 60 * 24;
-                    var diff = Math.floor(today.getTime() - startDate.getTime());
-                    var days = Math.floor(diff / day);
-                    var costPerDay = 0;
-                    if (days > 0)
-                      costPerDay = (data.Cost / days).toFixed(2);
-                    self.CostPerDayValue.set("text", costPerDay);
+                                var day = 1000 * 60 * 60 * 24;
+                                var diff = Math.floor(today.getTime() - startDate.getTime());
+                                var days = Math.floor(diff / day);
+                                var costPerDay = 0;
+                                if (days > 0)
+                                    costPerDay = (data.Cost / days).toFixed(2);
+                                self.CostPerDayValue.set("text", costPerDay);
                     
-                    self.CostPerDayTitle.viewModel.$el.show();
-                    self.CostPerDayValue.viewModel.$el.show();
-                  } catch (e) { }                  
-                }
-                else {
-                  self.CostPerDayTitle.viewModel.$el.hide();
-                  self.CostPerDayValue.viewModel.$el.hide();
-                }
+                                self.CostPerDayTitle.viewModel.$el.show();
+                                self.CostPerDayValue.viewModel.$el.show();
+                            } catch (e) { }                  
+                        }
+                        else {
+                            self.CostPerDayTitle.viewModel.$el.hide();
+                            self.CostPerDayValue.viewModel.$el.hide();
+                        }
                 
-              } else {
-                self.CostOverallTitle.viewModel.$el.hide();
-                self.CostOverallValue.viewModel.$el.hide();                
+                    } else {
+                        self.CostOverallTitle.viewModel.$el.hide();
+                        self.CostOverallValue.viewModel.$el.hide();                
 
-                self.CostPerDayTitle.viewModel.$el.hide();
-                self.CostPerDayValue.viewModel.$el.hide();
-              }
+                        self.CostPerDayTitle.viewModel.$el.hide();
+                        self.CostPerDayValue.viewModel.$el.hide();
+                    }
 
 
-              self.renderStopControl();
-            }
-          });
+                    self.renderStopControl();
+                }
+            });
         },
 
         campaignChanged: function () {
@@ -315,6 +322,10 @@ define(["sitecore"], function (_sc) {
         createEmail: function () {
             this.resetLanguageContext();
             _sc.trigger("createEmail");
+        },
+        
+        assignGoals: function(variantid) {
+            _sc.trigger("assignGoals", variantid);
         },
 
         removeCurrentVersion: function () {
@@ -476,22 +487,22 @@ define(["sitecore"], function (_sc) {
         saveCampaign: function () {
             this.resetLanguageContext();
             this.SaveValidationMessageBar.removeMessages();
-          var name = this.GeneralNameTextBox.get("text"),
-              alias = this.GeneralAliasTextBox.get("text"),
-              description = this.GeneralDescriptionTextBox.get("text"),
-              startdate = this.DatePicker.viewModel.$el.val(),
-              enddate = this.EndDatePicker.viewModel.$el.val();
+            var name = this.GeneralNameTextBox.get("text"),
+                alias = this.GeneralAliasTextBox.get("text"),
+                description = this.GeneralDescriptionTextBox.get("text"),
+                startdate = this.DatePicker.viewModel.$el.val(),
+                enddate = this.EndDatePicker.viewModel.$el.val();
 
-          // cost parsing
-          var isCostParse = true;
-          var cost = 0;
-          var costText = this.CostInfoTextBox.get("text");
-          if (costText != null && costText != "") {
-            cost = parseInt(costText);
-            if (isNaN(cost)) {
-              isCostParse = false;
+            // cost parsing
+            var isCostParse = true;
+            var cost = 0;
+            var costText = this.CostInfoTextBox.get("text");
+            if (costText != null && costText != "") {
+                cost = parseInt(costText);
+                if (isNaN(cost)) {
+                    isCostParse = false;
+                }
             }
-          }
 
             var startd = new Date(startdate);
             var endd = new Date(enddate);
@@ -505,7 +516,7 @@ define(["sitecore"], function (_sc) {
                 this.SaveValidationMessageBar.addMessage('error', 'End date should be greated than start date');
             }
             else if (!isCostParse) {
-              this.SaveValidationMessageBar.addMessage('error', "Type of 'Cost overall' field must be Number and value must be positive");
+                this.SaveValidationMessageBar.addMessage('error', "Type of 'Cost overall' field must be Number and value must be positive");
             } else {
                 this.SaveValidationMessageBar.removeMessages();
                 var self = this;
@@ -530,7 +541,7 @@ define(["sitecore"], function (_sc) {
                     $.get("/api/sitecore/cla/campaign/RenameCampaignCategory?ts=" + new Date().getTime()
                         + "&itemID=" + this.item.id + "&newName=" + name)
                       .done(function (data) {
-                        self.ProgressIndicator.set("isBusy", false);
+                          self.ProgressIndicator.set("isBusy", false);
                       });
                 }
             }
@@ -649,10 +660,10 @@ define(["sitecore"], function (_sc) {
 
 
             if (status === "Published" || status === "Obsolete") {
-              this.CreateVariantButton.viewModel.$el.hide();
+                this.CreateVariantButton.viewModel.$el.hide();
             }
             else {
-              this.CreateVariantButton.viewModel.$el.show();
+                this.CreateVariantButton.viewModel.$el.show();
             }
 
 
@@ -671,18 +682,18 @@ define(["sitecore"], function (_sc) {
         },
 
         isCampaignPublishVersion: function () {
-          var isPublished = false;
-          if (this.campaign != null && this.campaign.ver != null) {
-            for (var i = 0; i < this.campaign.ver.length; i++) {
-              var version = this.campaign.ver[i];
-              if (version.State === "Published") {
-                isPublished = true;
-                break;
-              }
+            var isPublished = false;
+            if (this.campaign != null && this.campaign.ver != null) {
+                for (var i = 0; i < this.campaign.ver.length; i++) {
+                    var version = this.campaign.ver[i];
+                    if (version.State === "Published") {
+                        isPublished = true;
+                        break;
+                    }
+                }
             }
-          }
 
-          return isPublished;
+            return isPublished;
         },
 
         updateRestrictions: function () {

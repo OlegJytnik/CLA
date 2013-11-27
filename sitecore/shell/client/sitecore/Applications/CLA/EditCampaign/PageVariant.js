@@ -10,8 +10,8 @@ define(["sitecore"], function (_sc) {
         },
 
         setStatus: function () {
-          var state = this.get("status");
-          this.updateEditingControls(state);
+            var state = this.get("status");
+            this.updateEditingControls(state);
         },
 
         editCampaignChanged: function () {
@@ -32,20 +32,20 @@ define(["sitecore"], function (_sc) {
         },
         
         updateEditingControls: function (state) {
-          var CreateVariantButton;
-          if(this.get("EditCampaign") != null && this.get("EditCampaign").CreateVariantButton != null)
-            CreateVariantButton = this.get("EditCampaign").CreateVariantButton;
+            var CreateVariantButton;
+            if(this.get("EditCampaign") != null && this.get("EditCampaign").CreateVariantButton != null)
+                CreateVariantButton = this.get("EditCampaign").CreateVariantButton;
 
-          if (state === "Published" || state === "Obsolete") {
-            this.ActionControl.viewModel.$el.hide();
-            if (CreateVariantButton != null)
-              CreateVariantButton.viewModel.$el.hide();
-          }
-          else {
-            this.ActionControl.viewModel.$el.show();
-            if (CreateVariantButton != null)
-              CreateVariantButton.viewModel.$el.show();
-          }
+            if (state === "Published" || state === "Obsolete") {
+                this.ActionControl.viewModel.$el.hide();
+                if (CreateVariantButton != null)
+                    CreateVariantButton.viewModel.$el.hide();
+            }
+            else {
+                this.ActionControl.viewModel.$el.show();
+                if (CreateVariantButton != null)
+                    CreateVariantButton.viewModel.$el.show();
+            }
 
         },
 
@@ -57,6 +57,12 @@ define(["sitecore"], function (_sc) {
             database.getItem(this.get("variantId"), function (data) {
                 app.currentItem = data.toModel();
             });
+        },
+        
+        assignGoals: function () {
+            var app = this;
+            var parentapp = app.get("EditCampaign");
+            parentapp.assignGoals(this.get("variantId"));
         },
 
         deleteVariant: function () {
